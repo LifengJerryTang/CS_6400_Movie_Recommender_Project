@@ -111,12 +111,12 @@ def close_db_connection(db, cursor):
     cursor.close()
 
 
-db = get_db_connection("localhost", "root", "kktt12345")
+db = get_db_connection("localhost", "root", "<your password>")
 my_cursor = db.cursor()
 my_cursor.execute("CREATE DATABASE IF NOT EXISTS movie_database")
 close_db_connection(db, my_cursor)
 
-db = get_db_connection("localhost", "root", "kktt12345", "movie_database")
+db = get_db_connection("localhost", "root", "<your password>", "movie_database")
 
 my_cursor = db.cursor()
 
