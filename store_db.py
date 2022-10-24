@@ -32,7 +32,6 @@ def store_ratings(db, cursor):
 
             try:
                 cursor.execute(query)
-                print(query)
                 db.commit()
             except:
                 continue
@@ -71,8 +70,6 @@ def store_movies(db, cursor):
             if len(list(movie)) < 9:
                 continue
 
-            print(list(movie))
-
             genres_list = ast.literal_eval(movie[0])
             genres_name_list = [genre['name'] for genre in genres_list]
             genres_names_csv = ','.join(genres_name_list)
@@ -91,7 +88,6 @@ def store_movies(db, cursor):
 
             try:
                 cursor.execute(query)
-                print(query)
                 db.commit()
             except:
                 continue
