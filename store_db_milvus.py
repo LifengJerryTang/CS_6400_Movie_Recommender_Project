@@ -18,6 +18,8 @@ from pymilvus import (
     Collection,
 )
 
+import pandas as pd
+
 fmt = "\n=== {:30} ===\n"
 search_latency_fmt = "search latency = {:.4f}s"
 num_entities, dim = 3000, 8
@@ -116,6 +118,15 @@ insert_result = hello_milvus.insert(entities)
 print(f"Number of entities in Milvus: {hello_milvus.num_entities}")  # check the num_entites
 """
 
+movie_data = np.array(pd.read_csv('data/movies_metadata.csv'))
+movie_collection.insert(movie_data)
+
+rating_data = np.array(pd.read_csv('data/ratings.csv'))
+rating_collection.insert(rating_data)
+
+
+
+
 
 ################################################################################
 # 4. create index
@@ -141,8 +152,10 @@ hello_milvus.create_index("embeddings", index)
 # - query based on scalar filtering(boolean, int, etc.)
 # - hybrid search based on vector similarity and scalar filtering.
 #
-
-# Before conducting a search or a query, you need to load the data in `hello_milvus` into memory.
+"""
+    Example:
+    
+    # Before conducting a search or a query, you need to load the data in `hello_milvus` into memory.
 print(fmt.format("Start loading"))
 hello_milvus.load()
 
@@ -188,9 +201,13 @@ for hits in result:
         print(f"hit: {hit}, random field: {hit.entity.get('random')}")
 print(search_latency_fmt.format(end_time - start_time))
 
+"""
 ###############################################################################
 # 6. delete entities by PK
 # You can delete entities by their PK values using boolean expressions.
+"""
+Example:
+
 ids = insert_result.primary_keys
 
 expr = f'pk in ["{ids[0]}" , "{ids[1]}"]'
@@ -203,10 +220,16 @@ hello_milvus.delete(expr)
 
 result = hello_milvus.query(expr=expr, output_fields=["random", "embeddings"])
 print(f"query after delete by expr=`{expr}` -> result: {result}\n")
+"""
 
 
 ###############################################################################
 # 7. drop collection
 # Finally, drop the hello_milvus collection
+"""
+Example:
+
 print(fmt.format("Drop collection `hello_milvus`"))
 utility.drop_collection("hello_milvus")
+
+"""
