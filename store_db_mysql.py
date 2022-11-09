@@ -3,92 +3,123 @@ import csv
 import ast
 
 
-def store_ratings(db, cursor):
+def store_user_features(db, cursor):
     cursor.execute("""
-        DROP TABLE IF EXISTS rating
+        DROP TABLE IF EXISTS user_feature
     """)
 
     cursor.execute(
         """
-        CREATE TABLE rating(
-            userId INT NOT NULL,
-            movieId INT NOT NULL,
-            rating INT NOT NULL,
-            timestamp BIGINT,
-            CONSTRAINT ratingPK PRIMARY KEY (userId, movieId),
-            CONSTRAINT moveIdFK FOREIGN KEY (movieId) REFERENCES movie(id)
+        CREATE TABLE user_feature(
+            userId INT PRIMARY KEY,
+            user_feature_20230101 TEXT,
+            user_feature_20220101 TEXT,
+            user_feature_20200101 TEXT,
+            user_feature_20150101 TEXT,
+            user_feature_20100101 TEXT
         )
         """
     )
 
-    csv_file_path = "data/ratings.csv"
+    csv_file_path = "data/user_feature_calculated.csv"
 
     with open(csv_file_path, encoding='utf8', newline='') as csvfile:
-        ratings = csv.reader(csvfile)
-        next(ratings, None)  # skips the header
+        user_features = csv.reader(csvfile)
+        next(user_features, None)  # skips the header
 
-        for userId, movieId, rating, timestamp in ratings:
-            query = '''INSERT INTO rating VALUES ({0}, {1}, {2}, {3});'''.format(userId, movieId, rating, timestamp)
+        i = 0
+
+        for _, userId, user_feature_20230101, \
+            user_feature_20220101, user_feature_20200101, \
+            user_feature_20150101, user_feature_20100101 in user_features:
+
+            if i > 1000000:
+                break
+
+            query = '''INSERT INTO user_feature VALUES ({0}, {1}, {2}, {3}, {4}, {5});''' \
+                .format(userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
+                        user_feature_20150101, user_feature_20100101)
 
             try:
                 cursor.execute(query)
                 db.commit()
+                i += 1
             except:
                 continue
 
 
-def store_movies(db, cursor):
+def store_movie_features(db, cursor):
     cursor.execute("""
-        DROP TABLE IF EXISTS movie
+        DROP TABLE IF EXISTS movie_feature
     """)
 
     cursor.execute(
         """
-        CREATE TABLE movie (
-            genres VARCHAR(255),
+        CREATE TABLE movie_feature (
+            cast TEXT,
+            crew TEXT,
+            keywords TEXT,
+            adult VARCHAR(5),
+            belongs_to_collection TEXT,
+            budget BIGINT,
+            genres TEXT,
+            homepage TEXT,
             id INT PRIMARY KEY,
-            imdb_id VARCHAR(50),
-            language VARCHAR(5),
-            title VARCHAR(255) NOT NULL,
-            popularity REAL,
-            release_date VARCHAR(12),
+            original_language VARCHAR(5),
+            original_title VARCHAR(255),
+            overview TEXT,
+            popularity INT,
+            poster_path TEXT,
+            production_companies TEXT,
+            production_countries TEXT,
+            release_date VARCHAR(15),
+            release_date_timestamp BIGINT,
+            have_release_date VARCHAR(5),
+            revenue BIGINT,
             runtime INT,
-            tagline VARCHAR(255)
+            spoken_languages TEXT,
+            status VARCHAR(20),
+            tagline TEXT,
+            title VARCHAR(255),
+            vote_average INT,
+            vote_count INT,
+            movie_feature TEXT
+            
         )
         """
     )
 
-    csv_file_path = "data/movies_metadata.csv"
+    csv_file_path = "data/movie_feature_calculated.csv"
 
     with open(csv_file_path, encoding='utf8', newline='') as csvfile:
 
-        movies = csv.reader(csvfile)
-        next(movies, None)
+        movie_features = csv.reader(csvfile)
+        next(movie_features, None)
 
-        for movie in movies:
+        i = 0
 
-            if len(list(movie)) < 9:
+        for movie_feature in movie_features:
+
+            if len(list(movie_feature)) < 29:
                 continue
 
-            genres_list = ast.literal_eval(movie[0])
-            genres_name_list = [genre['name'] for genre in genres_list]
-            genres_names_csv = ','.join(genres_name_list)
+            if i > 1000000:
+                break
 
-            runtime = movie[7]
-
-            if runtime == '':
-                runtime = 0
-
-            tagline = movie[8].replace('''"''', "'")
-
-            query = '''INSERT INTO movie VALUES ("{0}", {1}, "{2}", "{3}", "{4}", {5}, "{6}", {7}, "{8}");''' \
-                .format(genres_names_csv, movie[1], movie[2], movie[3],
-                        movie[4], movie[5], movie[6],
-                        runtime, tagline)
+            query = '''INSERT INTO movie_feature VALUES ("{0}", "{1}", "{2}", "{3}", "{4}", {5}, "{6}", "{7}", {8},
+            "{9}", "{10}", "{11}", {12}, "{13}", "{14}", "{15}", "{16}", {17}, "{18}", {19}, {20},
+            "{21}", "{22}", "{23}", "{24}", {25}, {26}, "{27}");''' \
+                .format(movie_feature[1], movie_feature[2], movie_feature[3], movie_feature[4], movie_feature[5],
+                        movie_feature[6], movie_feature[7], movie_feature[8], movie_feature[9], movie_feature[10],
+                        movie_feature[11], movie_feature[12], movie_feature[13], movie_feature[14], movie_feature[15],
+                        movie_feature[16], movie_feature[17], movie_feature[18], movie_feature[19], movie_feature[20],
+                        movie_feature[21], movie_feature[22], movie_feature[23], movie_feature[24], movie_feature[25],
+                        movie_feature[26], movie_feature[27], movie_feature[28])
 
             try:
                 cursor.execute(query)
                 db.commit()
+                i += 1
             except:
                 continue
 
@@ -107,15 +138,15 @@ def close_db_connection(db, cursor):
     cursor.close()
 
 
-db = get_db_connection("localhost", "root", "<your password>")
+db = get_db_connection("localhost", "root", "kktt12345")
 my_cursor = db.cursor()
-my_cursor.execute("CREATE DATABASE IF NOT EXISTS movie_database")
+my_cursor.execute("CREATE DATABASE IF NOT EXISTS recommendation_features")
 close_db_connection(db, my_cursor)
 
-db = get_db_connection("localhost", "root", "<your password>", "movie_database")
+db = get_db_connection("localhost", "root", "kktt12345", "recommendation_features")
 
 my_cursor = db.cursor()
 
-store_movies(db, my_cursor)
-store_ratings(db, my_cursor)
+# store_movie_features(db, my_cursor)
+store_user_features(db, my_cursor)
 close_db_connection(db, my_cursor)
