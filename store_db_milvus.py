@@ -66,48 +66,48 @@ connections.connect("default", host="localhost", port="19530")
 """
 
 movie_feature_fields = [
-    FieldSchema(name="cast", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="crew", dtype=DataType.VARCHAR, max_length=10000),#<class 'str'>
-    FieldSchema(name="keywords", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="adult", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="belongs_to_collection", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="budget", dtype=DataType.INT64), #<class 'int'>
-    FieldSchema(name="genres", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="homepage", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False), #<class 'int'>
-    FieldSchema(name="original_language", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="original_title", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="overview", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="popularity", dtype=DataType.INT64), #<class 'int'>
-    FieldSchema(name="poster_path", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="production_companies", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="production_countries", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="release_date", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="release_date_timestamp", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="have_release_date", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="revenue", dtype=DataType.INT64), #<class 'int'>
-    FieldSchema(name="runtime", dtype=DataType.INT64), #<class 'int'>
-    FieldSchema(name="spoken_languages", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="status", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="tagline", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=10000), #<class 'str'>
-    FieldSchema(name="vote_average", dtype=DataType.INT64), #<class 'int'>
-    FieldSchema(name="vote_count", dtype=DataType.INT64), #<class 'int'>
-    FieldSchema(name="movie_feature", dtype=DataType.FLOAT_VECTOR,  dim=128) #<class 'list'>
+    FieldSchema(name="cast", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="crew", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="keywords", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="adult", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="belongs_to_collection", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="budget", dtype=DataType.INT64),  # <class 'int'>
+    FieldSchema(name="genres", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="homepage", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False),  # <class 'int'>
+    FieldSchema(name="original_language", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="original_title", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="overview", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="popularity", dtype=DataType.INT64),  # <class 'int'>
+    FieldSchema(name="poster_path", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="production_companies", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="production_countries", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="release_date", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="release_date_timestamp", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="have_release_date", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="revenue", dtype=DataType.INT64),  # <class 'int'>
+    FieldSchema(name="runtime", dtype=DataType.INT64),  # <class 'int'>
+    FieldSchema(name="spoken_languages", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="status", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="tagline", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
+    FieldSchema(name="vote_average", dtype=DataType.INT64),  # <class 'int'>
+    FieldSchema(name="vote_count", dtype=DataType.INT64),  # <class 'int'>
+    FieldSchema(name="movie_feature", dtype=DataType.FLOAT_VECTOR, dim=128)  # <class 'list'>
 
 ]
 
-utility.drop_collection("movie_feature_collection")
-movie_feature_schema = CollectionSchema(movie_feature_fields, "Description: schema for movie feature data")
-movie_feature_collection = Collection("movie_feature_collection", movie_feature_schema, consistency_level="Strong")
+# utility.drop_collection("movie_feature_collection")
+# movie_feature_schema = CollectionSchema(movie_feature_fields, "Description: schema for movie feature data")
+# movie_feature_collection = Collection("movie_feature_collection", movie_feature_schema, consistency_level="Strong")
 
 user_feature_fields = [
     FieldSchema(name="user_id", dtype=DataType.INT64, is_primary=True, auto_id=False),
-    FieldSchema(name="user_feature_20230101", dtype=DataType.VARCHAR, max_length=1000),
-    FieldSchema(name="user_feature_20220101", dtype=DataType.VARCHAR, max_length=1000),
-    FieldSchema(name="user_feature_20200101", dtype=DataType.VARCHAR, max_length=1000),
-    FieldSchema(name="user_feature_20150101", dtype=DataType.VARCHAR, max_length=1000),
-    FieldSchema(name="user_feature_20100101", dtype=DataType.FLOAT_VECTOR,  dim=1),
+    FieldSchema(name="user_feature_20230101", dtype=DataType.VARCHAR, max_length=10000),
+    FieldSchema(name="user_feature_20220101", dtype=DataType.VARCHAR, max_length=10000),
+    FieldSchema(name="user_feature_20200101", dtype=DataType.VARCHAR, max_length=10000),
+    FieldSchema(name="user_feature_20150101", dtype=DataType.VARCHAR, max_length=10000),
+    FieldSchema(name="user_feature_20100101", dtype=DataType.FLOAT_VECTOR, dim=128),
 ]
 
 utility.drop_collection("rating_feature_collection")
@@ -137,96 +137,78 @@ insert_result = hello_milvus.insert(entities)
 
 print(f"Number of entities in Milvus: {hello_milvus.num_entities}")  # check the num_entites
 """
-# rng = np.random.default_rng(seed=19530)
-# stuff = rng.random((num_entities, 4))
+
+# print("Inserting movie feature data...")
 #
-# for s in stuff:
-#     print(s)
-
-# print(len([-19.515625, 87.9375, -96.5625, -54.09375, 86.8125, 8.8359375, -18.328125, -21.828125, -38.25, -3.833984375, -37.75, 19.15625, -11.875, -63.5625, -58.78125, -26.71875, -43.0625, -25.296875, 1.353515625, 1.0546875, -23.34375, 23.140625, 6.0546875, -34.34375, 26.375, -54.4375, -26.4375, 55.03125, 33.84375, -44.40625, 63.78125, -21.65625, -63.65625, 53.96875, 12.296875, 3.572265625, -6.0546875, 20.625, -13.984375, 30.9375, 53.0625, 4.421875, -18.5, -51.75, 96.875, 31.875, -40.9375, -39.3125, 11.453125, 76.5, 39.09375, -0.68896484375, 5.61328125, 15.359375, 9.828125, -41.8125, 22.734375, -1.5390625, -28.546875, 17.265625, 3.35546875, -71.75, 11.546875, 48.75, -33.59375, -7.50390625, -53.59375, -24.828125, -12.1484375, 17.515625, 16.65625, -48.25, -51.65625, -16.015625, -75.125, -28.140625, -47.96875, -45.34375, 57.4375, 39.15625, -84.3125, -47.5625, 17.1875, 2.8046875, 19.359375, -82.4375, 48.875, -2.802734375, 20.921875, 31.421875, 69.6875, 37.1875, 36.71875, 86.625, -20.96875, 27.359375, 28.28125, -1.5966796875, 26.90625, -23.125, -37.6875, 18.921875, 2.3515625, 70.125, 56.34375, 20.015625, 23.421875, 86.0, -52.71875, -19.140625, -7.84375, -81.9375, -12.2421875, -50.71875, 21.71875, 18.90625, -15.3125, 3.421875, -23.484375, -58.09375, -28.671875, -14.4609375, -46.6875, -46.8125, 33.65625, -28.09375, 50.40625, 19.28125]))
+# with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as csvfile:
+#     movie_features = csv.reader(csvfile)
+#     next(movie_features, None)
 #
-# movie_feature_collection.insert([
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     [2],
-#     ["dsd"],
-#     ["dsd"],
-#     [1],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     [3],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     [2],
-#     ["dsd"],
-#     [4],
-#     [5],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     ["dsd"],
-#     [2],
-#      [9],
-#     [[-19.515625, 87.9375, -96.5625, -54.09375, 86.8125, 8.8359375, -18.328125, -21.828125, -38.25, -3.833984375, -37.75, 19.15625, -11.875, -63.5625, -58.78125, -26.71875, -43.0625, -25.296875, 1.353515625, 1.0546875, -23.34375, 23.140625, 6.0546875, -34.34375, 26.375, -54.4375, -26.4375, 55.03125, 33.84375, -44.40625, 63.78125, -21.65625, -63.65625, 53.96875, 12.296875, 3.572265625, -6.0546875, 20.625, -13.984375, 30.9375, 53.0625, 4.421875, -18.5, -51.75, 96.875, 31.875, -40.9375, -39.3125, 11.453125, 76.5, 39.09375, -0.68896484375, 5.61328125, 15.359375, 9.828125, -41.8125, 22.734375, -1.5390625, -28.546875, 17.265625, 3.35546875, -71.75, 11.546875, 48.75, -33.59375, -7.50390625, -53.59375, -24.828125, -12.1484375, 17.515625, 16.65625, -48.25, -51.65625, -16.015625, -75.125, -28.140625, -47.96875, -45.34375, 57.4375, 39.15625, -84.3125, -47.5625, 17.1875, 2.8046875, 19.359375, -82.4375, 48.875, -2.802734375, 20.921875, 31.421875, 69.6875, 37.1875, 36.71875, 86.625, -20.96875, 27.359375, 28.28125, -1.5966796875, 26.90625, -23.125, -37.6875, 18.921875, 2.3515625, 70.125, 56.34375, 20.015625, 23.421875, 86.0, -52.71875, -19.140625, -7.84375, -81.9375, -12.2421875, -50.71875, 21.71875, 18.90625, -15.3125, 3.421875, -23.484375, -58.09375, -28.671875, -14.4609375, -46.6875, -46.8125, 33.65625, -28.09375, 50.40625, 19.28125]]
-# ])
-
+#     it = 0
 #
+#     for movie_feature in movie_features:
+#
+#         data_arr = list(movie_feature)
+#         if len(data_arr) < 29:
+#             continue
+#
+#         if it > 10000:
+#             break
+#
+#         data_arr.pop(0)
+#
+#         insert_data = []
+#
+#         try:
+#             for i in range(len(data_arr)):
+#                 data = str(data_arr[i])
+#
+#                 if data.isnumeric():
+#                     data = int(data)
+#
+#                 data_arr[i] = data
+#         except:
+#             continue
+#
+#         data_arr[len(data_arr) - 1] = ast.literal_eval(data_arr[len(data_arr) - 1])
+#
+#         for data in data_arr:
+#             insert_data.append([data])
+#
+#         try:
+#             print("movie_feature iteration ", it)
+#             movie_feature_collection.insert(insert_data)
+#             it += 1
+#         except:
+#             continue
 
+print("Inserting user feature data...")
 
-
-with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as csvfile:
-    movie_features = csv.reader(csvfile)
-    next(movie_features, None)
+with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as csvfile:
+    user_features = csv.reader(csvfile)
+    next(user_features, None)  # skips the header
 
     it = 0
 
-    for movie_feature in movie_features:
+    for _, userId, user_feature_20230101, \
+        user_feature_20220101, user_feature_20200101, \
+        user_feature_20150101, user_feature_20100101 in user_features:
 
-        data_arr = list(movie_feature)
-        if len(data_arr) < 29:
-            continue
-
-        if it > 1000000:
+        if it > 10000:
             break
 
-        data_arr.pop(0)
+        userId = int(userId)
 
-        insert_data = []
-
-        print("Iteration\n\n", it)
-
-        try:
-            for i in range(len(data_arr)):
-                data = str(data_arr[i])
-
-                if data.isnumeric():
-                    data = int(data)
-
-                data_arr[i] = data
-        except:
-            continue
-
-        data_arr[len(data_arr) - 1] = ast.literal_eval(data_arr[len(data_arr) - 1])
-
-        for data in data_arr:
-            insert_data.append([data])
+        user_feature_20100101 = ast.literal_eval(user_feature_20100101)
+        insert_data = [[userId], [user_feature_20230101], [user_feature_20220101],
+                       [user_feature_20200101], [user_feature_20150101], [user_feature_20100101]]
 
         try:
-            movie_feature_collection.insert(insert_data)
+            print("user_feature iteration ", it)
+            user_feature_collection.insert(insert_data)
             it += 1
         except:
             continue
-
-# movie_feature_collection.insert(movie_feature_data)
-
-# user_feature_data = np.array(pd.read_csv('data/user_feature_calculated.csv').iloc[:, 1:])
-# user_feature_collection.insert(user_feature_data)
 
 ################################################################################
 # 4. create index
