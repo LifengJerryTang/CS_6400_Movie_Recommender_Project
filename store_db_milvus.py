@@ -97,9 +97,9 @@ movie_feature_fields = [
 
 ]
 
-# utility.drop_collection("movie_feature_collection")
-# movie_feature_schema = CollectionSchema(movie_feature_fields, "Description: schema for movie feature data")
-# movie_feature_collection = Collection("movie_feature_collection", movie_feature_schema, consistency_level="Strong")
+utility.drop_collection("movie_feature_collection")
+movie_feature_schema = CollectionSchema(movie_feature_fields, "Description: schema for movie feature data")
+movie_feature_collection = Collection("movie_feature_collection", movie_feature_schema, consistency_level="Strong")
 
 user_feature_fields = [
     FieldSchema(name="user_id", dtype=DataType.INT64, is_primary=True, auto_id=False),

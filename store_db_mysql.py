@@ -36,7 +36,7 @@ def store_user_features(db, cursor):
             if i > 10000:
                 break
 
-            query = '''INSERT INTO user_feature VALUES ({0}, {1}, {2}, {3}, {4}, {5});''' \
+            query = '''INSERT INTO user_feature VALUES ({0}, "{1}", "{2}", "{3}", "{4}", "{5}");''' \
                 .format(userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
                         user_feature_20150101, user_feature_20100101)
 
@@ -147,6 +147,10 @@ db = get_db_connection("localhost", "root", "kktt12345", "recommendation_feature
 
 my_cursor = db.cursor()
 
-# store_movie_features(db, my_cursor)
+store_movie_features(db, my_cursor)
 store_user_features(db, my_cursor)
+
+
 close_db_connection(db, my_cursor)
+
+
