@@ -107,7 +107,7 @@ user_feature_fields = [
     FieldSchema(name="user_feature_20220101", dtype=DataType.VARCHAR, max_length=10000),
     FieldSchema(name="user_feature_20200101", dtype=DataType.VARCHAR, max_length=10000),
     FieldSchema(name="user_feature_20150101", dtype=DataType.VARCHAR, max_length=10000),
-    FieldSchema(name="user_feature_20100101", dtype=DataType.FLOAT_VECTOR, dim=128),
+    FieldSchema(name="user_feature_20100101", dtype=DataType.FLOAT_VECTOR, dim=128)
 ]
 
 utility.drop_collection("rating_feature_collection")
