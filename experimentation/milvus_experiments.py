@@ -20,7 +20,7 @@ movie_feature_collection.load()
 movie_like = 'Batman'
 
 res = movie_feature_collection.query(
-    expr="id in [268]",
+    expr="original_title in [{0}]".format(movie_like),
     output_fields=["original_title", "movie_feature"],
     consistency_level="Strong"
 )
@@ -40,8 +40,9 @@ search_res = movie_feature_collection.search(
 
 
 for movie_id in search_res[0].ids:
+
     movie_data = movie_feature_collection.query(
-                    expr="id in [{0}]".format(461615),
+                    expr="id in [{0}]".format(movie_id),
                     output_fields=["original_title", "movie_feature"],
                     consistency_level="Strong"
                 )

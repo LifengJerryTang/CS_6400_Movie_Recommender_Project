@@ -140,47 +140,46 @@ print(f"Number of entities in Milvus: {hello_milvus.num_entities}")  # check the
 
 print("Inserting movie feature data...")
 
-# with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as csvfile:
-#     movie_features = csv.reader(csvfile)
-#     next(movie_features, None)
-#
-#     it = 0
-#
-#     for movie_feature in movie_features:
-#
-#         data_arr = list(movie_feature)
-#         if len(data_arr) < 29:
-#             continue
-#
-#         if it > 10000:
-#             break
-#
-#         data_arr.pop(0)
-#
-#         insert_data = []
-#
-#         try:
-#             for i in range(len(data_arr)):
-#                 data = str(data_arr[i])
-#
-#                 if data.isnumeric():
-#                     data = int(data)
-#
-#                 data_arr[i] = data
-#         except:
-#             continue
-#
-#         data_arr[len(data_arr) - 1] = ast.literal_eval(data_arr[len(data_arr) - 1])
-#
-#         for data in data_arr:
-#             insert_data.append([data])
-#
-#         try:
-#             print("movie_feature iteration ", it)
-#             movie_feature_collection.insert(insert_data)
-#             it += 1
-#         except:
-#             continue
+with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as csvfile:
+    movie_features = csv.reader(csvfile)
+    next(movie_features, None)
+
+    it = 0
+
+    for movie_feature in movie_features:
+
+        data_arr = list(movie_feature)
+        if len(data_arr) < 29:
+            continue
+
+        if it > 10000:
+            break
+
+        data_arr.pop(0)
+
+        insert_data = []
+
+        try:
+            for i in range(len(data_arr)):
+                data = str(data_arr[i])
+
+                if data.isnumeric():
+                    data = int(data)
+
+                data_arr[i] = data
+        except:
+            continue
+
+        data_arr[len(data_arr) - 1] = ast.literal_eval(data_arr[len(data_arr) - 1])
+
+        for data in data_arr:
+            insert_data.append([data])
+
+        try:
+            movie_feature_collection.insert(insert_data)
+            it += 1
+        except:
+            continue
 
 print("Inserting user feature data...")
 
@@ -204,7 +203,6 @@ with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as cs
                        [user_feature_20200101], [user_feature_20150101], [user_feature_20100101]]
 
         try:
-            print("user_feature iteration ", it)
             user_feature_collection.insert(insert_data)
             it += 1
         except:
