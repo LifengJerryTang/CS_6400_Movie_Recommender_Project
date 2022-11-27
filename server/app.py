@@ -1,65 +1,22 @@
 from flask import Flask, render_template, url_for, request, redirect
-import mysql.connector
-from pymilvus import (
-    connections,
-    utility,
-    FieldSchema, CollectionSchema, DataType,
-    Collection,
-)
-
+import db_services.mysql_service as mysql_service
+import db_services.milvus_service as milvus_service
 import ast
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
-def get_db_connection(host_name, username, password, database_name=None):
-    return mysql.connector.connect(
-        host=host_name,
-        user=username,
-        passwd=password,
-        database=database_name
-    )
-
-
-def close_db_connection(db, cursor):
-    db.close()
-    cursor.close()
-
-
-def connect_to_milvus(alias, host, port):
-    print(f"Connecting to milvus; host: {host}, port: {port}")
-    connections.connect(alias=alias, host=host, port=port)
-
-
-def get_movie_data_mysql(cursor, movie_name):
-    cursor.execute("SELECT * FROM movie_feature WHERE original_title = '{0}'".format(movie_name))
-    return my_cursor.fetchall()[0]
-
-
-def get_all_movies_mysql(cursor):
-    cursor.execute("SELECT * FROM movie_feature")
-    all_movie_data = my_cursor.fetchall()
-
-    return all_movie_data
-
-
-def get_movie_data_by_field_mysql(cursor, field_1, field_2, field_2_data):
-    query = """SELECT {0} FROM movie_feature WHERE {1} = '{2}' """.format(field_1, field_2, field_2_data)
-    cursor.execute(query)
-
-    return my_cursor.fetchall()[0]
-
-
-connect_to_milvus("default", "localhost", 19530)
-movie_feature_collection = Collection("movie_feature_collection")
+milvus_service.connect_to_milvus("default", "localhost", 19530)
+movie_feature_collection = milvus_service.get_collection("movie_feature_collection")
 movie_feature_collection.load()
-user_feature_collection = Collection("user_feature_collection")
+user_feature_collection = milvus_service.get_collection("user_feature_collection")
 user_feature_collection.load()
 
-mysql_db = get_db_connection("localhost", "root", "kktt12345", "recommendation_features")
+mysql_db = mysql_service.get_connection("localhost", "root", "kktt12345", "recommendation_features")
 my_cursor = mysql_db.cursor()
 
-all_movies_from_mysql = get_all_movies_mysql(my_cursor)
+all_movies_from_mysql = mysql_service.get_all_movies(my_cursor)
+all_users_from_mysql = mysql_service.get_all_users(my_cursor)
 
 
 @app.route("/")
@@ -67,12 +24,13 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/mysql/<movie_name>", methods=["GET"])
+@app.route("/similar_movies/mysql/<movie_name>", methods=["GET"])
 def mysql_similar_movies(movie_name):
-    movie_like_data = get_movie_data_mysql(my_cursor, movie_name)
+    movie_like_data = mysql_service.get_movie_data_by_name(my_cursor, movie_name)
     movie_like_feature = ast.literal_eval(movie_like_data[len(movie_like_data) - 1])
 
     movie_idx_similarities = []
+    return_data = []
 
     for i in range(len(all_movies_from_mysql)):
         curr_movie = all_movies_from_mysql[i]
@@ -83,49 +41,61 @@ def mysql_similar_movies(movie_name):
 
     movie_idx_similarities.sort(key=lambda x: x[1], reverse=True)
 
-    return_data = []
-
     for name, _ in movie_idx_similarities[1:11]:
         return_data.append(name)
 
     return return_data
 
 
-@app.route("/milvus/<movie_name>", methods=["GET"])
+@app.route("/similar_movies/milvus/<movie_name>", methods=["GET"])
 def milvus_similar_movies(movie_name):
-    movie_like_id = get_movie_data_by_field_mysql(my_cursor, "id", "original_title", movie_name)[0]
+    movie_like_id = mysql_service.get_movie_data_by_field(my_cursor, "id", "original_title", movie_name)[0]
 
-    res = movie_feature_collection.query(
-        expr="id in [{0}]".format(movie_like_id),
-        output_fields=["original_title", "movie_feature"],
-        consistency_level="Strong"
-    )
+    res = milvus_service.query_collection(movie_feature_collection, query_string="id in [{0}]".format(movie_like_id),
+                                          output_fields=["original_title", "movie_feature"])
 
     movie_like_feature = res[0]['movie_feature']
-
-    search_res = movie_feature_collection.search(
-        data=[movie_like_feature],
-        anns_field="movie_feature",
-        param={},
-        offset=0,
-        limit=11,
-        output_fields=["original_title"],
-        consistency_level="Strong"
-    )
-
     return_data = []
 
+    search_res = milvus_service.perform_similarity_search(collection=movie_feature_collection,
+                                                          feature_vector=movie_like_feature,
+                                                          anns_field="movie_feature",
+                                                          output_fields=["original_title"],
+                                                          offset=0, limit=11)
     for movie_id in search_res[0].ids:
-        movie_data = movie_feature_collection.query(
-            expr="id in [{0}]".format(movie_id),
-            output_fields=["original_title", "movie_feature"],
-            consistency_level="Strong"
-        )
+        movie_data = milvus_service.query_collection(movie_feature_collection,
+                                                     query_string="id in [{0}]".format(movie_id),
+                                                     output_fields=["original_title", "movie_feature"])
 
         if movie_id == movie_like_id:
             continue
 
         return_data.append(movie_data[0]['original_title'])
+
+    return return_data
+
+
+@app.route("/similar_users/mysql/<user_id>", methods=["GET"])
+def mysql_similar_user(user_id):
+    user_data = mysql_service.get_user_data_by_id(my_cursor, user_id)
+    user_feature = ast.literal_eval(user_data[len(user_data) - 1])
+    return_data = []
+    user_idx_similarities = []
+
+    for i in range(len(all_users_from_mysql)):
+        curr_user = all_users_from_mysql[i]
+        curr_user_feature = ast.literal_eval(curr_user[len(curr_user) - 1])
+        similarity_score = cosine_similarity([user_feature], [curr_user_feature])
+        curr_user_id = curr_user[0]
+        user_idx_similarities.append((curr_user_id, similarity_score[0][0]))
+
+    user_idx_similarities.sort(key=lambda x: x[1], reverse=True)
+
+    for curr_user_id, _ in user_idx_similarities[1:11]:
+        if curr_user_id == user_id:
+            continue
+
+        return_data.append(curr_user_id)
 
     return return_data
 

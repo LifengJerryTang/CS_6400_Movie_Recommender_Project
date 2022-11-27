@@ -1,7 +1,5 @@
 import mysql.connector
 import csv
-import ast
-
 
 def store_user_features(db, cursor):
     cursor.execute("""
@@ -149,7 +147,6 @@ my_cursor = db.cursor()
 
 store_movie_features(db, my_cursor)
 store_user_features(db, my_cursor)
-
 
 close_db_connection(db, my_cursor)
 
