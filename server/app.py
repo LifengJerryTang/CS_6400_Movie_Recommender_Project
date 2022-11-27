@@ -76,7 +76,7 @@ def milvus_similar_movies(movie_name):
 
 
 @app.route("/similar_users/mysql/<user_id>", methods=["GET"])
-def mysql_similar_user(user_id):
+def mysql_similar_users(user_id):
     user_data = mysql_service.get_user_data_by_id(my_cursor, user_id)
     user_feature = ast.literal_eval(user_data[len(user_data) - 1])
     return_data = []
@@ -96,6 +96,23 @@ def mysql_similar_user(user_id):
             continue
 
         return_data.append(curr_user_id)
+
+    return return_data
+
+
+@app.route("/similar_users/milvus/<user_id>", methods=["GET"])
+def milvus_similar_users(user_id):
+    res = milvus_service.query_collection(user_feature_collection, query_string="user_id in [{0}]".format(user_id),
+                                          output_fields=["user_id", "user_feature_20100101"])
+
+    user_feature = res[0]['user_feature_20100101']
+
+    search_res = milvus_service.perform_similarity_search(collection=user_feature_collection,
+                                                          feature_vector=user_feature,
+                                                          anns_field="user_feature_20100101",
+                                                          output_fields=["user_id"],
+                                                          offset=0, limit=11)
+    return_data = list(search_res[0].ids)
 
     return return_data
 
