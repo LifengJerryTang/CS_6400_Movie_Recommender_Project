@@ -8,12 +8,10 @@ app = Flask(__name__)
 
 milvus_service.connect_to_milvus("default", "localhost", 19530)
 movie_feature_collection = milvus_service.get_collection("movie_feature_collection")
-movie_feature_collection.load()
 user_feature_collection = milvus_service.get_collection("user_feature_collection")
-user_feature_collection.load()
 
-mysql_db = mysql_service.get_connection("localhost", "root", "kktt12345", "recommendation_features")
-my_cursor = mysql_db.cursor()
+db = mysql_service.get_connection("localhost", "root", "kktt12345", "recommendation_features")
+my_cursor = db.cursor()
 
 all_movies_from_mysql = mysql_service.get_all_movies(my_cursor)
 all_users_from_mysql = mysql_service.get_all_users(my_cursor)

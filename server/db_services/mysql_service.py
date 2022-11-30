@@ -2,12 +2,14 @@ import mysql.connector
 
 
 def get_connection(host_name, username, password, database_name=None):
-    return mysql.connector.connect(
+    db = mysql.connector.connect(
         host=host_name,
         user=username,
         passwd=password,
         database=database_name
     )
+
+    return db
 
 
 def get_user_data_by_field(cursor, field_1, field_2, field_2_data):

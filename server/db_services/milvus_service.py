@@ -10,6 +10,9 @@ def connect_to_milvus(alias, host, port):
 
 
 def get_collection(collection_name):
+    collection = Collection(collection_name)
+    collection.load()
+
     return Collection(collection_name)
 
 

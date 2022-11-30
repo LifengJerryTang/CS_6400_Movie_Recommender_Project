@@ -36,21 +36,21 @@ print(fmt.format("start connecting to Milvus"))
 connections.connect("default", host="localhost", port="19530")
 
 #################################################################################
-# 2. create collection
-# We're going to create a collection with 3 fields.
-# +-+------------+------------+------------------+------------------------------+
-# | | field name | field type | other attributes |       field description      |
-# +-+------------+------------+------------------+------------------------------+
-# |1|    "pk"    |   VarChar  |  is_primary=True |      "primary field"         |
-# | |            |            |   auto_id=False  |                              |
-# +-+------------+------------+------------------+------------------------------+
-# |2|  "random"  |    Double  |                  |      "a double field"        |
-# +-+------------+------------+------------------+------------------------------+
-# |3|"embeddings"| FloatVector|     dim=8        |  "float vector with dim 8"   |
-# +-+------------+------------+------------------+------------------------------+
-
+# 2. create collection(s)
 """
     Example:
+    
+    We're going to create a collection with 3 fields.
+    +-+------------+------------+------------------+------------------------------+
+    | | field name | field type | other attributes |       field description      |
+    +-+------------+------------+------------------+------------------------------+
+    |1|    "pk"    |   VarChar  |  is_primary=True |      "primary field"         |
+    | |            |            |   auto_id=False  |                              |
+    +-+------------+------------+------------------+------------------------------+
+    |2|  "random"  |    Double  |                  |      "a double field"        |
+    +-+------------+------------+------------------+------------------------------+
+    |3|"embeddings"| FloatVector|     dim=8        |  "float vector with dim 8"   |
+    +-+------------+------------+------------------+------------------------------+
     
     fields = [
         FieldSchema(name="pk", dtype=DataType.VARCHAR, is_primary=True, auto_id=False, max_length=100),

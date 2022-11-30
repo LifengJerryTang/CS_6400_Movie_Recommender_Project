@@ -1,6 +1,7 @@
 import mysql.connector
 import csv
 
+
 def store_user_features(db, cursor):
     cursor.execute("""
         DROP TABLE IF EXISTS user_feature
@@ -98,24 +99,28 @@ def store_movie_features(db, cursor):
 
         for movie_feature in movie_features:
 
-            if len(list(movie_feature)) < 29:
+            movie_feature = list(movie_feature)
+            if len(movie_feature) < 29:
                 continue
 
             if i > 10000:
                 break
 
-            query = '''INSERT INTO movie_feature VALUES ("{0}", "{1}", "{2}", "{3}", "{4}", {5}, "{6}", "{7}", {8},
-            "{9}", "{10}", "{11}", {12}, "{13}", "{14}", "{15}", "{16}", {17}, "{18}", {19}, {20},
-            "{21}", "{22}", "{23}", "{24}", {25}, {26}, "{27}");''' \
-                .format(movie_feature[1], movie_feature[2], movie_feature[3], movie_feature[4], movie_feature[5],
-                        movie_feature[6], movie_feature[7], movie_feature[8], movie_feature[9], movie_feature[10],
-                        movie_feature[11], movie_feature[12], movie_feature[13], movie_feature[14], movie_feature[15],
-                        movie_feature[16], movie_feature[17], movie_feature[18], movie_feature[19], movie_feature[20],
-                        movie_feature[21], movie_feature[22], movie_feature[23], movie_feature[24], movie_feature[25],
-                        movie_feature[26], movie_feature[27], movie_feature[28])
+            for i in range(len(movie_feature)):
+                if isinstance(movie_feature[i], str):
+                    movie_feature[i] = movie_feature[i].replace("'", " ")
+
+            query = '''INSERT INTO movie_feature VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
 
             try:
-                cursor.execute(query)
+                cursor.execute(query, (movie_feature[1], movie_feature[2], movie_feature[3], movie_feature[4],
+                                       movie_feature[5], movie_feature[6], movie_feature[7], movie_feature[8],
+                                       movie_feature[9], movie_feature[10], movie_feature[11], movie_feature[12],
+                                       movie_feature[13], movie_feature[14], movie_feature[15], movie_feature[16],
+                                       movie_feature[17], movie_feature[18], movie_feature[19], movie_feature[20],
+                                       movie_feature[21], movie_feature[22], movie_feature[23], movie_feature[24],
+                                       movie_feature[25], movie_feature[26], movie_feature[27], movie_feature[28]))
                 db.commit()
                 i += 1
             except:
@@ -149,5 +154,3 @@ store_movie_features(db, my_cursor)
 store_user_features(db, my_cursor)
 
 close_db_connection(db, my_cursor)
-
-
