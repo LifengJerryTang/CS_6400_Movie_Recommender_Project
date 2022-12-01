@@ -35,12 +35,11 @@ def store_user_features(db, cursor):
             if i > 10000:
                 break
 
-            query = '''INSERT INTO user_feature VALUES ({0}, "{1}", "{2}", "{3}", "{4}", "{5}");''' \
-                .format(userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
-                        user_feature_20150101, user_feature_20100101)
+            query = '''INSERT INTO user_feature VALUES (%s, %s, %s, %s, %s, %s);'''
 
             try:
-                cursor.execute(query)
+                cursor.execute(query, (userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
+                                       user_feature_20150101, user_feature_20100101))
                 db.commit()
                 i += 1
             except:
