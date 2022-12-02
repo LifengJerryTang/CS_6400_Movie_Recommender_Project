@@ -152,22 +152,29 @@ with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as c
         if len(data_arr) < 29:
             continue
 
-        if it > 10000:
+        if it > 20000:
             break
 
         data_arr.pop(0)
 
         insert_data = []
+        long_data_exists = False
+        numeric_columns_idx = [5, 8, 12, 19, 20, 25, 26]
 
-        try:
-            for i in range(len(data_arr)):
-                data = str(data_arr[i])
+        for col in range(len(data_arr)):
+            data = str(data_arr[col])
+            # The data has to be numeric and the current column is a column that contains number
+            if data.isnumeric() and col in numeric_columns_idx:
+                data = int(data)
+            else:
+                data = data.replace("'", " ")
+                if len(data) > 10000:
+                    long_data_exists = True
+                    break
 
-                if data.isnumeric():
-                    data = int(data)
+            data_arr[col] = data
 
-                data_arr[i] = data
-        except:
+        if long_data_exists:
             continue
 
         data_arr[len(data_arr) - 1] = ast.literal_eval(data_arr[len(data_arr) - 1])
@@ -175,11 +182,9 @@ with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as c
         for data in data_arr:
             insert_data.append([data])
 
-        try:
-            movie_feature_collection.insert(insert_data)
-            it += 1
-        except:
-            continue
+        movie_feature_collection.insert(insert_data)
+        it += 1
+
 
 print("Inserting user feature data...")
 
@@ -193,7 +198,7 @@ with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as cs
         user_feature_20220101, user_feature_20200101, \
         user_feature_20150101, user_feature_20100101 in user_features:
 
-        if it > 10000:
+        if it > 20000:
             break
 
         userId = int(userId)
@@ -202,11 +207,8 @@ with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as cs
         insert_data = [[userId], [user_feature_20230101], [user_feature_20220101],
                        [user_feature_20200101], [user_feature_20150101], [user_feature_20100101]]
 
-        try:
-            user_feature_collection.insert(insert_data)
-            it += 1
-        except:
-            continue
+        user_feature_collection.insert(insert_data)
+        it += 1
 
 ################################################################################
 # 4. create index

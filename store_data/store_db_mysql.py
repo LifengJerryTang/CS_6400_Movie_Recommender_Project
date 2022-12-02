@@ -32,18 +32,22 @@ def store_user_features(db, cursor):
             user_feature_20220101, user_feature_20200101, \
             user_feature_20150101, user_feature_20100101 in user_features:
 
-            if i > 10000:
+            if i > 20000:
                 break
 
             query = '''INSERT INTO user_feature VALUES (%s, %s, %s, %s, %s, %s);'''
 
-            try:
-                cursor.execute(query, (userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
-                                       user_feature_20150101, user_feature_20100101))
-                db.commit()
-                i += 1
-            except:
-                continue
+            cursor.execute(query, (userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
+                                   user_feature_20150101, user_feature_20100101))
+            db.commit()
+            i += 1
+            # try:
+            #     cursor.execute(query, (userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
+            #                            user_feature_20150101, user_feature_20100101))
+            #     db.commit()
+            #     i += 1
+            # except:
+            #     continue
 
 
 def store_movie_features(db, cursor):
@@ -102,28 +106,38 @@ def store_movie_features(db, cursor):
             if len(movie_feature) < 29:
                 continue
 
-            if i > 10000:
+            if i > 20000:
                 break
+
+            long_data_exists = False
 
             for i in range(len(movie_feature)):
                 if isinstance(movie_feature[i], str):
+                    if len(movie_feature[i]) > 10000:
+                        long_data_exists = True
+                        break
                     movie_feature[i] = movie_feature[i].replace("'", " ")
+
+            if long_data_exists:
+                continue
 
             query = '''INSERT INTO movie_feature VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
 
-            try:
-                cursor.execute(query, (movie_feature[1], movie_feature[2], movie_feature[3], movie_feature[4],
-                                       movie_feature[5], movie_feature[6], movie_feature[7], movie_feature[8],
-                                       movie_feature[9], movie_feature[10], movie_feature[11], movie_feature[12],
-                                       movie_feature[13], movie_feature[14], movie_feature[15], movie_feature[16],
-                                       movie_feature[17], movie_feature[18], movie_feature[19], movie_feature[20],
-                                       movie_feature[21], movie_feature[22], movie_feature[23], movie_feature[24],
-                                       movie_feature[25], movie_feature[26], movie_feature[27], movie_feature[28]))
-                db.commit()
-                i += 1
-            except:
-                continue
+            cursor.execute(query, (movie_feature[1], movie_feature[2], movie_feature[3], movie_feature[4],
+                                   movie_feature[5], movie_feature[6], movie_feature[7], movie_feature[8],
+                                   movie_feature[9], movie_feature[10], movie_feature[11], movie_feature[12],
+                                   movie_feature[13], movie_feature[14], movie_feature[15], movie_feature[16],
+                                   movie_feature[17], movie_feature[18], movie_feature[19], movie_feature[20],
+                                   movie_feature[21], movie_feature[22], movie_feature[23], movie_feature[24],
+                                   movie_feature[25], movie_feature[26], movie_feature[27], movie_feature[28]))
+            db.commit()
+            i += 1
+
+            # try:
+            #
+            # except:
+            #     continue
 
 
 def get_db_connection(host_name, username, password, database_name=None):
