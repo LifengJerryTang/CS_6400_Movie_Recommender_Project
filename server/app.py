@@ -111,6 +111,8 @@ def milvus_similar_users(user_id):
                                                           offset=0, limit=11)
     return_data = list(search_res[0].ids)
 
+    return_data.pop(0)
+
     return return_data
 
 
