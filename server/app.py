@@ -2,9 +2,11 @@ from flask import Flask, render_template, url_for, request, redirect
 import db_services.mysql_service as mysql_service
 import db_services.milvus_service as milvus_service
 import ast
+from flask_cors import CORS
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
+CORS(app, resources={r"*": {"origins": "*"}})
 
 milvus_service.connect_to_milvus("default", "localhost", 19530)
 movie_feature_collection = milvus_service.get_collection("movie_feature_collection")

@@ -41,14 +41,6 @@ def store_user_features(db, cursor):
                                    user_feature_20150101, user_feature_20100101))
             db.commit()
             i += 1
-            # try:
-            #     cursor.execute(query, (userId, user_feature_20230101, user_feature_20220101, user_feature_20200101,
-            #                            user_feature_20150101, user_feature_20100101))
-            #     db.commit()
-            #     i += 1
-            # except:
-            #     continue
-
 
 def store_movie_features(db, cursor):
     cursor.execute("""
@@ -133,11 +125,6 @@ def store_movie_features(db, cursor):
                                    movie_feature[25], movie_feature[26], movie_feature[27], movie_feature[28]))
             db.commit()
             i += 1
-
-            # try:
-            #
-            # except:
-            #     continue
 
 
 def get_db_connection(host_name, username, password, database_name=None):
