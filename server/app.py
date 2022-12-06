@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, request, redirect
 import db_services.mysql_service as mysql_service
 import db_services.milvus_service as milvus_service
 import ast
+import time
 from flask_cors import CORS
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -23,12 +24,14 @@ def index():
 
 @app.route("/similar_movies/mysql/<movie_name>", methods=["GET"])
 def mysql_similar_movies(movie_name):
+    start_time = time.time()
+
     all_movies_from_mysql = mysql_service.get_all_movies(my_cursor)
     movie_like_data = mysql_service.get_movie_data_by_name(my_cursor, movie_name)
     movie_like_feature = ast.literal_eval(movie_like_data[len(movie_like_data) - 1])
 
     similar_movies_with_score = []
-    return_data = []
+    similar_movies = []
 
     for i in range(len(all_movies_from_mysql)):
         curr_movie = all_movies_from_mysql[i]
@@ -40,13 +43,22 @@ def mysql_similar_movies(movie_name):
     similar_movies_with_score.sort(key=lambda x: x[1], reverse=True)
 
     for name, _ in similar_movies_with_score[1:11]:
-        return_data.append(name)
+        similar_movies.append(name)
+
+    runtime = time.time() - start_time
+
+    return_data = {
+        "runtime": runtime,
+        "movies": similar_movies
+    }
 
     return return_data
 
 
 @app.route("/similar_movies/milvus/<movie_name>", methods=["GET"])
 def milvus_similar_movies(movie_name):
+    start_time = time.time()
+
     movie_like_id = mysql_service.get_movie_data_by_field(my_cursor, "id", "original_title", movie_name)[0]
 
     res = milvus_service.query_collection(movie_feature_collection, query_string="id in [{0}]".format(movie_like_id),
@@ -70,15 +82,24 @@ def milvus_similar_movies(movie_name):
 
         similar_movie_names.append(movie_data[0]['original_title'])
 
-    return similar_movie_names
+    runtime = time.time() - start_time
+
+    return_data = {
+        "runtime": runtime,
+        "movies": similar_movie_names
+    }
+
+    return return_data
 
 
 @app.route("/similar_users/mysql/<user_id>", methods=["GET"])
 def mysql_similar_users(user_id):
+    start_time = time.time()
+
     all_users_from_mysql = mysql_service.get_all_users(my_cursor)
     user_data = mysql_service.get_user_data_by_id(my_cursor, user_id)
     user_feature = ast.literal_eval(user_data[len(user_data) - 1])
-    return_data = []
+    user_ids = []
     user_idx_similarities = []
 
     for i in range(len(all_users_from_mysql)):
@@ -94,13 +115,21 @@ def mysql_similar_users(user_id):
         if curr_user_id == user_id:
             continue
 
-        return_data.append(curr_user_id)
+        user_ids.append(curr_user_id)
+
+    runtime = time.time() - start_time
+
+    return_data = {
+        "runtime": runtime,
+        "user_ids": user_ids
+    }
 
     return return_data
 
 
 @app.route("/similar_users/milvus/<user_id>", methods=["GET"])
 def milvus_similar_users(user_id):
+    start_time = time.time()
     res = milvus_service.query_collection(user_feature_collection, query_string="user_id in [{0}]".format(user_id),
                                           output_fields=["user_id", "user_feature_20100101"])
 
@@ -111,20 +140,28 @@ def milvus_similar_users(user_id):
                                                           anns_field="user_feature_20100101",
                                                           output_fields=["user_id"],
                                                           offset=0, limit=11)
-    return_data = list(search_res[0].ids)
+    user_ids = list(search_res[0].ids)
 
-    return_data.pop(0)
+    user_ids.pop(0)
+
+    runtime = time.time() - start_time
+
+    return_data = {
+        "runtime": runtime,
+        "user_ids": user_ids
+    }
 
     return return_data
 
 
 @app.route("/recommended_movies_for_user/mysql/<user_id>", methods=["GET"])
 def mysql_recommended_movies_for_user(user_id):
+    start_time = time.time()
     all_movies_from_mysql = mysql_service.get_all_movies(my_cursor)
     user_data = mysql_service.get_user_data_by_id(my_cursor, user_id)
     user_feature = ast.literal_eval(user_data[len(user_data) - 1])
 
-    return_data = []
+    recommended_movies = []
     recommended_movies_with_Score = []
 
     for i in range(len(all_movies_from_mysql)):
@@ -137,7 +174,46 @@ def mysql_recommended_movies_for_user(user_id):
     recommended_movies_with_Score.sort(key=lambda x: x[1], reverse=True)
 
     for name, _ in recommended_movies_with_Score[1:11]:
-        return_data.append(name)
+        recommended_movies.append(name)
+
+    runtime = time.time() - start_time
+
+    return_data = {
+        "runtime": runtime,
+        "movies": recommended_movies
+    }
+
+    return return_data
+
+
+@app.route("/recommended_movies_for_user/milvus/<user_id>", methods=["GET"])
+def milvus_recommended_movies_for_user(user_id):
+    start_time = time.time()
+    res = milvus_service.query_collection(user_feature_collection, query_string="user_id in [{0}]".format(user_id),
+                                          output_fields=["user_id", "user_feature_20100101"])
+
+    user_feature = res[0]['user_feature_20100101']
+
+    recommended_movie_names = []
+
+    search_res = milvus_service.perform_similarity_search(collection=movie_feature_collection,
+                                                          feature_vector=user_feature,
+                                                          anns_field="movie_feature",
+                                                          output_fields=["original_title"],
+                                                          offset=0, limit=11)
+    for movie_id in search_res[0].ids:
+        movie_data = milvus_service.query_collection(movie_feature_collection,
+                                                     query_string="id in [{0}]".format(movie_id),
+                                                     output_fields=["original_title", "movie_feature"])
+
+        recommended_movie_names.append(movie_data[0]['original_title'])
+
+    runtime = time.time() - start_time
+
+    return_data = {
+        "runtime": runtime,
+        "movies": recommended_movie_names
+    }
 
     return return_data
 

@@ -1,6 +1,6 @@
 import mysql.connector
 import csv
-
+import time
 
 def store_user_features(db, cursor):
     cursor.execute("""
@@ -150,7 +150,11 @@ db = get_db_connection("localhost", "root", "kktt12345", "recommendation_feature
 
 my_cursor = db.cursor()
 
+start_time = time.time()
+
 store_movie_features(db, my_cursor)
 store_user_features(db, my_cursor)
+
+runtime = time.time() - start_time
 
 close_db_connection(db, my_cursor)
