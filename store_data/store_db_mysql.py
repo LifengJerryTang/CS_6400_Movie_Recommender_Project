@@ -152,9 +152,13 @@ my_cursor = db.cursor()
 
 start_time = time.time()
 
+print("Inserting movie feature data into mysql")
 store_movie_features(db, my_cursor)
+print("Inserting user feature data into mysql")
 store_user_features(db, my_cursor)
 
 runtime = time.time() - start_time
+
+print("Insertion runtime (mysql) ", runtime)
 
 close_db_connection(db, my_cursor)

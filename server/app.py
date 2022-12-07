@@ -31,25 +31,34 @@ def mysql_similar_movies(movie_name):
     movie_like_feature = ast.literal_eval(movie_like_data[len(movie_like_data) - 1])
 
     similar_movies_with_score = []
-    similar_movies = []
+    similar_movies_data = []
 
     for i in range(len(all_movies_from_mysql)):
         curr_movie = all_movies_from_mysql[i]
         curr_movie_feature = ast.literal_eval(curr_movie[len(curr_movie) - 1])
         similarity_score = cosine_similarity([movie_like_feature], [curr_movie_feature])
         curr_movie_name = curr_movie[10]
-        similar_movies_with_score.append((curr_movie_name, similarity_score[0][0]))
+        curr_movie_casts = curr_movie[0]
+        curr_movie_keywords = curr_movie[2]
+        curr_movie_genres = curr_movie[6]
+        movie_data = {
+            "name": curr_movie_name,
+            "genres": curr_movie_genres,
+            "casts": curr_movie_casts,
+            "keywords": curr_movie_keywords
+        }
+        similar_movies_with_score.append((movie_data, similarity_score[0][0]))
 
     similar_movies_with_score.sort(key=lambda x: x[1], reverse=True)
 
-    for name, _ in similar_movies_with_score[1:11]:
-        similar_movies.append(name)
+    for movie_data, _ in similar_movies_with_score[1:11]:
+        similar_movies_data.append(movie_data)
 
     runtime = time.time() - start_time
 
     return_data = {
         "runtime": runtime,
-        "movies": similar_movies
+        "movies": similar_movies_data
     }
 
     return return_data
@@ -65,7 +74,7 @@ def milvus_similar_movies(movie_name):
                                           output_fields=["original_title", "movie_feature"])
 
     movie_like_feature = res[0]['movie_feature']
-    similar_movie_names = []
+    similar_movies_data = []
 
     search_res = milvus_service.perform_similarity_search(collection=movie_feature_collection,
                                                           feature_vector=movie_like_feature,
@@ -73,20 +82,30 @@ def milvus_similar_movies(movie_name):
                                                           output_fields=["original_title"],
                                                           offset=0, limit=11)
     for movie_id in search_res[0].ids:
-        movie_data = milvus_service.query_collection(movie_feature_collection,
+        movie_all_data = milvus_service.query_collection(movie_feature_collection,
                                                      query_string="id in [{0}]".format(movie_id),
-                                                     output_fields=["original_title", "movie_feature"])
+                                                     output_fields=["original_title", "movie_feature",
+                                                                    "genres", "cast", "keywords"])
 
         if movie_id == movie_like_id:
             continue
 
-        similar_movie_names.append(movie_data[0]['original_title'])
+        print(movie_all_data)
+
+        movie_data = {
+            "name":  movie_all_data[0]['original_title'],
+            "genres":  movie_all_data[0]['genres'],
+            "casts": movie_all_data[0]['cast'],
+            "keywords":movie_all_data[0]['keywords']
+        }
+
+        similar_movies_data.append(movie_data)
 
     runtime = time.time() - start_time
 
     return_data = {
         "runtime": runtime,
-        "movies": similar_movie_names
+        "movies": similar_movies_data
     }
 
     return return_data
@@ -161,7 +180,7 @@ def mysql_recommended_movies_for_user(user_id):
     user_data = mysql_service.get_user_data_by_id(my_cursor, user_id)
     user_feature = ast.literal_eval(user_data[len(user_data) - 1])
 
-    recommended_movies = []
+    recommended_movies_data = []
     recommended_movies_with_Score = []
 
     for i in range(len(all_movies_from_mysql)):
@@ -169,18 +188,27 @@ def mysql_recommended_movies_for_user(user_id):
         curr_movie_feature = ast.literal_eval(curr_movie[len(curr_movie) - 1])
         similarity_score = cosine_similarity([user_feature], [curr_movie_feature])
         curr_movie_name = curr_movie[10]
-        recommended_movies_with_Score.append((curr_movie_name, similarity_score[0][0]))
+        curr_movie_casts = curr_movie[0]
+        curr_movie_keywords = curr_movie[2]
+        curr_movie_genres = curr_movie[6]
+        movie_data = {
+            "name": curr_movie_name,
+            "genres": curr_movie_genres,
+            "casts": curr_movie_casts,
+            "keywords": curr_movie_keywords
+        }
+        recommended_movies_with_Score.append((movie_data, similarity_score[0][0]))
 
     recommended_movies_with_Score.sort(key=lambda x: x[1], reverse=True)
 
-    for name, _ in recommended_movies_with_Score[1:11]:
-        recommended_movies.append(name)
+    for movie_data, _ in recommended_movies_with_Score[1:11]:
+        recommended_movies_data.append(movie_data)
 
     runtime = time.time() - start_time
 
     return_data = {
         "runtime": runtime,
-        "movies": recommended_movies
+        "movies": recommended_movies_data
     }
 
     return return_data
@@ -194,7 +222,7 @@ def milvus_recommended_movies_for_user(user_id):
 
     user_feature = res[0]['user_feature_20100101']
 
-    recommended_movie_names = []
+    recommended_movies_data = []
 
     search_res = milvus_service.perform_similarity_search(collection=movie_feature_collection,
                                                           feature_vector=user_feature,
@@ -202,17 +230,25 @@ def milvus_recommended_movies_for_user(user_id):
                                                           output_fields=["original_title"],
                                                           offset=0, limit=11)
     for movie_id in search_res[0].ids:
-        movie_data = milvus_service.query_collection(movie_feature_collection,
+        movie_all_data = milvus_service.query_collection(movie_feature_collection,
                                                      query_string="id in [{0}]".format(movie_id),
-                                                     output_fields=["original_title", "movie_feature"])
+                                                     output_fields=["original_title", "movie_feature",
+                                                                        "genres", "cast", "keywords"])
 
-        recommended_movie_names.append(movie_data[0]['original_title'])
+        movie_data = {
+            "name": movie_all_data[0]['original_title'],
+            "genres": movie_all_data[0]['genres'],
+            "casts": movie_all_data[0]['cast'],
+            "keywords": movie_all_data[0]['keywords']
+        }
+
+        recommended_movies_data.append(movie_data)
 
     runtime = time.time() - start_time
 
     return_data = {
         "runtime": runtime,
-        "movies": recommended_movie_names
+        "movies": recommended_movies_data
     }
 
     return return_data

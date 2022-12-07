@@ -90,10 +90,10 @@ movie_feature_fields = [
     FieldSchema(name="spoken_languages", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
     FieldSchema(name="status", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
     FieldSchema(name="tagline", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
-    FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=10000),  # <class 'str'>
-    FieldSchema(name="vote_average", dtype=DataType.INT64),  # <class 'int'>
-    FieldSchema(name="vote_count", dtype=DataType.INT64),  # <class 'int'>
-    FieldSchema(name="movie_feature", dtype=DataType.FLOAT_VECTOR, dim=128)  # <class 'list'>
+    FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=10000),
+    FieldSchema(name="vote_average", dtype=DataType.INT64),
+    FieldSchema(name="vote_count", dtype=DataType.INT64),
+    FieldSchema(name="movie_feature", dtype=DataType.FLOAT_VECTOR, dim=128)
 
 ]
 
@@ -140,7 +140,7 @@ print(f"Number of entities in Milvus: {hello_milvus.num_entities}")  # check the
 
 start_time = time.time()
 
-print("Inserting movie feature data...")
+print("Inserting movie feature data into milvus..")
 
 with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as csvfile:
     movie_features = csv.reader(csvfile)
@@ -188,7 +188,7 @@ with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as c
         it += 1
 
 
-print("Inserting user feature data...")
+print("Inserting user feature data into milvus")
 
 with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as csvfile:
     user_features = csv.reader(csvfile)
@@ -214,3 +214,5 @@ with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as cs
 
 
 runtime = time.time() - start_time
+
+print("Insertion runtime (milvus) ", runtime)
