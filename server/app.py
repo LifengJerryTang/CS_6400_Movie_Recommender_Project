@@ -39,15 +39,45 @@ def mysql_similar_movies(movie_name):
         curr_movie_feature = ast.literal_eval(curr_movie[len(curr_movie) - 1])
         similarity_score = cosine_similarity([movie_like_feature], [curr_movie_feature])
         curr_movie_name = curr_movie[10]
-        curr_movie_casts = curr_movie[0]
-        curr_movie_keywords = curr_movie[2]
-        curr_movie_genres = curr_movie[6]
+        curr_movie_casts = curr_movie[0].split("name")
+        curr_movie_keywords = curr_movie[2].split(",")
+        curr_movie_genres = curr_movie[6].split(",")
+        casts = []
+        genres = []
+        keywords = []
+
+        for cast in curr_movie_casts:
+            if 'order' in cast:
+                idx_1 = cast.index(":")
+                idx_2 = cast.index("order")
+                casts.append(cast[idx_1 + 1: idx_2 - 3])
+
+        for genre in curr_movie_genres:
+            if 'name' in genre:
+                idx_1 = genre.index(":")
+                idx_2 = len(genre)
+
+                if "}" in genre:
+                    idx_2 = genre.index("}")
+                genres.append(genre[idx_1 + 2: idx_2 - 1])
+
+        for keyword in curr_movie_keywords:
+            if 'name' in keyword:
+                idx_1 = keyword.index(":")
+                idx_2 = len(keyword)
+
+                if "}" in keyword:
+                    idx_2 = keyword.index("}")
+
+                keywords.append(keyword[idx_1 + 2: idx_2])
+
         movie_data = {
             "name": curr_movie_name,
-            "genres": curr_movie_genres,
-            "casts": curr_movie_casts,
-            "keywords": curr_movie_keywords
+            "genres": genres,
+            "casts": casts,
+            "keywords": keywords
         }
+
         similar_movies_with_score.append((movie_data, similarity_score[0][0]))
 
     similar_movies_with_score.sort(key=lambda x: x[1], reverse=True)
@@ -84,20 +114,47 @@ def milvus_similar_movies(movie_name):
                                                           offset=0, limit=11)
     for movie_id in search_res[0].ids:
         movie_all_data = milvus_service.query_collection(movie_feature_collection,
-                                                     query_string="id in [{0}]".format(movie_id),
-                                                     output_fields=["original_title", "movie_feature",
-                                                                    "genres", "cast", "keywords"])
+                                                         query_string="id in [{0}]".format(movie_id),
+                                                         output_fields=["original_title", "movie_feature",
+                                                                        "genres", "cast", "keywords"])
 
         if movie_id == movie_like_id:
             continue
 
-        print(movie_all_data)
+        casts = []
+        genres = []
+        keywords = []
+
+        for cast in movie_all_data[0]['cast'].split("name"):
+            if 'order' in cast:
+                idx_1 = cast.index(":")
+                idx_2 = cast.index("order")
+                casts.append(cast[idx_1 + 1: idx_2 - 3])
+
+        for genre in movie_all_data[0]['genres'].split(","):
+            if 'name' in genre:
+                idx_1 = genre.index(":")
+                idx_2 = len(genre)
+
+                if "}" in genre:
+                    idx_2 = genre.index("}")
+                genres.append(genre[idx_1 + 2: idx_2])
+
+        for keyword in movie_all_data[0]['keywords'].split(","):
+            if 'name' in keyword:
+                idx_1 = keyword.index(":")
+                idx_2 = len(keyword)
+
+                if "}" in keyword:
+                    idx_2 = keyword.index("}")
+
+                keywords.append(keyword[idx_1 + 2: idx_2])
 
         movie_data = {
-            "name":  movie_all_data[0]['original_title'],
-            "genres":  movie_all_data[0]['genres'],
-            "casts": movie_all_data[0]['cast'],
-            "keywords":movie_all_data[0]['keywords']
+            "name": movie_all_data[0]['original_title'],
+            "genres": genres,
+            "casts": casts,
+            "keywords": keywords
         }
 
         similar_movies_data.append(movie_data)
@@ -196,7 +253,6 @@ def mysql_recommended_movies_for_user(user_id):
         genres = []
         keywords = []
 
-
         for cast in curr_movie_casts:
             if 'order' in cast:
                 idx_1 = cast.index(":")
@@ -206,14 +262,21 @@ def mysql_recommended_movies_for_user(user_id):
         for genre in curr_movie_genres:
             if 'name' in genre:
                 idx_1 = genre.index(":")
-                idx_2 = genre.index("}")
-                genres.append(genre[idx_1 + 2: idx_2 - 1])
+                idx_2 = len(genre)
+
+                if "}" in genre:
+                    idx_2 = genre.index("}")
+                genres.append(genre[idx_1 + 2: idx_2])
 
         for keyword in curr_movie_keywords:
             if 'name' in keyword:
                 idx_1 = keyword.index(":")
-                idx_2 = keyword.index("}")
-                keywords.append(keyword[idx_1 + 2: idx_2 - 1])
+                idx_2 = len(keyword)
+
+                if "}" in keyword:
+                    idx_2 = keyword.index("}")
+
+                keywords.append(keyword[idx_1 + 2: idx_2])
 
         movie_data = {
             "name": curr_movie_name,
@@ -221,6 +284,7 @@ def mysql_recommended_movies_for_user(user_id):
             "casts": casts,
             "keywords": keywords
         }
+
         recommended_movies_with_Score.append((movie_data, similarity_score[0][0]))
 
     recommended_movies_with_Score.sort(key=lambda x: x[1], reverse=True)
@@ -255,15 +319,45 @@ def milvus_recommended_movies_for_user(user_id):
                                                           offset=0, limit=11)
     for movie_id in search_res[0].ids:
         movie_all_data = milvus_service.query_collection(movie_feature_collection,
-                                                     query_string="id in [{0}]".format(movie_id),
-                                                     output_fields=["original_title", "movie_feature",
+                                                         query_string="id in [{0}]".format(movie_id),
+                                                         output_fields=["original_title", "movie_feature",
                                                                         "genres", "cast", "keywords"])
+
+        casts = []
+        genres = []
+        keywords = []
+
+        for cast in movie_all_data[0]['cast'].split("name"):
+            if 'order' in cast:
+                idx_1 = cast.index(":")
+                idx_2 = cast.index("order")
+                casts.append(cast[idx_1 + 1: idx_2 - 3])
+
+        for genre in movie_all_data[0]['genres'].split(","):
+            if 'name' in genre:
+                idx_1 = genre.index(":")
+                idx_2 = len(genre)
+
+                if "}" in genre:
+                    idx_2 = genre.index("}")
+
+                genres.append(genre[idx_1 + 2: idx_2])
+
+        for keyword in movie_all_data[0]['keywords'].split(","):
+            if 'name' in keyword:
+                idx_1 = keyword.index(":")
+                idx_2 = len(keyword)
+
+                if "}" in keyword:
+                    idx_2 = keyword.index("}")
+
+                keywords.append(keyword[idx_1 + 2: idx_2])
 
         movie_data = {
             "name": movie_all_data[0]['original_title'],
-            "genres": movie_all_data[0]['genres'],
-            "casts": movie_all_data[0]['cast'],
-            "keywords": movie_all_data[0]['keywords']
+            "genres": genres,
+            "casts": casts,
+            "keywords": keywords
         }
 
         recommended_movies_data.append(movie_data)
