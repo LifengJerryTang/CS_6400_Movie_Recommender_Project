@@ -3,6 +3,7 @@ import db_services.mysql_service as mysql_service
 import db_services.milvus_service as milvus_service
 import ast
 import time
+import json
 from flask_cors import CORS
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -188,14 +189,37 @@ def mysql_recommended_movies_for_user(user_id):
         curr_movie_feature = ast.literal_eval(curr_movie[len(curr_movie) - 1])
         similarity_score = cosine_similarity([user_feature], [curr_movie_feature])
         curr_movie_name = curr_movie[10]
-        curr_movie_casts = curr_movie[0]
-        curr_movie_keywords = curr_movie[2]
-        curr_movie_genres = curr_movie[6]
+        curr_movie_casts = curr_movie[0].split("name")
+        curr_movie_keywords = curr_movie[2].split(",")
+        curr_movie_genres = curr_movie[6].split(",")
+        casts = []
+        genres = []
+        keywords = []
+
+
+        for cast in curr_movie_casts:
+            if 'order' in cast:
+                idx_1 = cast.index(":")
+                idx_2 = cast.index("order")
+                casts.append(cast[idx_1 + 1: idx_2 - 3])
+
+        for genre in curr_movie_genres:
+            if 'name' in genre:
+                idx_1 = genre.index(":")
+                idx_2 = genre.index("}")
+                genres.append(genre[idx_1 + 2: idx_2 - 1])
+
+        for keyword in curr_movie_keywords:
+            if 'name' in keyword:
+                idx_1 = keyword.index(":")
+                idx_2 = keyword.index("}")
+                keywords.append(keyword[idx_1 + 2: idx_2 - 1])
+
         movie_data = {
             "name": curr_movie_name,
-            "genres": curr_movie_genres,
-            "casts": curr_movie_casts,
-            "keywords": curr_movie_keywords
+            "genres": genres,
+            "casts": casts,
+            "keywords": keywords
         }
         recommended_movies_with_Score.append((movie_data, similarity_score[0][0]))
 

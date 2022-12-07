@@ -154,7 +154,7 @@ with open('data/movie_feature_calculated.csv', encoding='utf8', newline='') as c
         if len(data_arr) < 29:
             continue
 
-        if it > 20000:
+        if it > 10000:
             break
 
         data_arr.pop(0)
@@ -200,7 +200,7 @@ with open("data/user_feature_calculated.csv", encoding='utf8', newline='') as cs
         user_feature_20220101, user_feature_20200101, \
         user_feature_20150101, user_feature_20100101 in user_features:
 
-        if it > 20000:
+        if it > 10000:
             break
 
         userId = int(userId)

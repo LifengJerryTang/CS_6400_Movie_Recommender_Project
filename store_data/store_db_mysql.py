@@ -32,7 +32,7 @@ def store_user_features(db, cursor):
             user_feature_20220101, user_feature_20200101, \
             user_feature_20150101, user_feature_20100101 in user_features:
 
-            if i > 20000:
+            if i > 10000:
                 break
 
             query = '''INSERT INTO user_feature VALUES (%s, %s, %s, %s, %s, %s);'''
@@ -98,7 +98,7 @@ def store_movie_features(db, cursor):
             if len(movie_feature) < 29:
                 continue
 
-            if i > 20000:
+            if i > 10000:
                 break
 
             long_data_exists = False
