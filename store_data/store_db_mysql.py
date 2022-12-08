@@ -141,12 +141,12 @@ def close_db_connection(db, cursor):
     cursor.close()
 
 
-db = get_db_connection("localhost", "root", "kktt12345")
+db = get_db_connection("localhost", "root", "<your password here>")
 my_cursor = db.cursor()
 my_cursor.execute("CREATE DATABASE IF NOT EXISTS recommendation_features")
 close_db_connection(db, my_cursor)
 
-db = get_db_connection("localhost", "root", "kktt12345", "recommendation_features")
+db = get_db_connection("localhost", "root", "<your password here>", "recommendation_features")
 
 my_cursor = db.cursor()
 
