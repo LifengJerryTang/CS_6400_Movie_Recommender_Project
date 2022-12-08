@@ -1,5 +1,9 @@
 # CS_6400_Movie_Recommender_Project
 ###### Team Members: Jiecheng Lu (ML), Guanchen Meng (Frontend), Lifeng Tang (Backend)
+
+##### Model Training README File:
+https://github.gatech.edu/ltang62/CS_6400_Movie_Recommender_Project/blob/main/machine_learning/README.md
+
 ##### Project Goal:<br> 
 - To experiment with the Milvus vector database<br>
 - To compare the speed of storing data between Milvus and MySQL<br>
