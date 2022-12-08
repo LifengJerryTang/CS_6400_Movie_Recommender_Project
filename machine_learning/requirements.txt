@@ -1,0 +1,7 @@
+dill==0.3.6
+einops==0.6.0
+einops_exts==0.0.3
+numpy==1.21.4
+pandas==1.4.1
+torch==1.10.0+cu113
+transformers==4.19.2
