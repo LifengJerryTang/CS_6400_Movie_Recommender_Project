@@ -17,8 +17,9 @@
    
 ##### Run the application
 1. Navigate to the project folder
-    
+    ![navigate](https://github.gatech.edu/storage/user/37340/files/046470b6-af73-4d15-b653-39693146c792)
 2. 
+
 
 
 
