@@ -1,5 +1,5 @@
 # CS_6400_Movie_Recommender_Project
-###### Team Members: Jiecheng Lu, Guanchen Meng, Lifeng Tang
+###### Team Members: Jiecheng Lu (ML), Guanchen Meng (Frontend), Lifeng Tang (Backend)
 ##### Project Goal:<br> 
 - To experiment with the Milvus vector database<br>
 - To compare the speed of storing data between Milvus and MySQL<br>
