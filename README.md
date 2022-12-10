@@ -2,8 +2,12 @@
 ###### Team Members: Jiecheng Lu (ML), Guanchen Meng (Frontend), Lifeng Tang (Backend)
 
 ##### Model Training README File:
+- **Note: running this is NOT necessary because we have all the feature data already prepared. This is just for reference if your are interested in our machine learning model.**
 https://github.gatech.edu/ltang62/CS_6400_Movie_Recommender_Project/blob/main/machine_learning/README.md
 
+##### Dataset
+- Please download the "movie_feature_calculated" csv file and the "user_feature_calculated" csv file from here: https://gtvault-my.sharepoint.com/:f:/g/personal/jlu414_gatech_edu/EmsfwJFcKWVDhflWvBQyVIcBU4FY1BY7ZOtMv5s30zGhqg
+- Store these two dataset in the "dataset" folder of this project. **The python code will refer to the "dataset" folder when reading data.**
 ##### Project Goal:<br> 
 - To experiment with the Milvus vector database<br>
 - To compare the speed of storing data between Milvus and MySQL<br>
