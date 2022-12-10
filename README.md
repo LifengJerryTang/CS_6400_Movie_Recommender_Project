@@ -33,7 +33,7 @@ https://github.gatech.edu/ltang62/CS_6400_Movie_Recommender_Project/blob/main/ma
 ##### Loading data, storing data, and running the application
 1. Navigate to the project folder
     ![navigate](https://github.gatech.edu/storage/user/37340/files/046470b6-af73-4d15-b653-39693146c792)<br><br><br>
-2. Start Docker Desktop<br><br>
+2. Start Docker Desktop<br><br>![image](https://github.gatech.edu/storage/user/37340/files/c2804992-52d2-40b8-89d2-4eefc377fdc5)
 3. Go back to your terminal and run "docker-compose up -d" **to start Milvus.**
    1. **Note: this step assumes that you installed Milvus in the project folder. If you installed Milvus somewhere else, you need to navigate to that folder first.**
    ![image](https://github.gatech.edu/storage/user/37340/files/4941bda6-32df-46db-95f3-d02cf84f71cc)<br><br>
