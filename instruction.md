@@ -1,12 +1,7 @@
-# CS_6400_Movie_Recommender_Project
+# Project Instruction
 ###### Team Members: Jiecheng Lu (ML), Guanchen Meng (Frontend), Lifeng Tang (Backend)
 
-##### Project Goal:<br> 
-- To experiment with the Milvus vector database<br>
-- To compare the speed of storing data between Milvus and MySQL<br>
-- To compare the speed of similarity search between Milvus and MySQL
-
-##### Model Training README File:
+##### Model Training Code Files:
 - **Note: running this is NOT necessary because we have all the feature data already prepared. This is just for reference if your are interested in our machine learning model.**
 https://github.gatech.edu/ltang62/CS_6400_Movie_Recommender_Project/blob/main/machine_learning/README.md
 
@@ -17,23 +12,6 @@ https://github.gatech.edu/ltang62/CS_6400_Movie_Recommender_Project/blob/main/ma
 
 ##### Configuration Changes
 - We DID NOT change any configurations of any part of this project.
-##### Code Files Written By Us
-1. store_data/store_db_milvus.py
-2. store_data/store_db_mysql.py
-3. server/app.py
-4. server/db_services/milvus_service.py
-5. server/db_services/mysql_service.py
-6. machine_learning/calculate.py
-7. machine_learning/dataset.py
-8. machine_learning/embedding_configs.json
-9. machine_learning/model.py
-10. machine_learning/module_utils.py
-11. machine_learning/requirements.txt
-12. machine_learning/t5.py
-13. machine_learning/train.py
-14. experimentation/milvus_experiments.py
-15. experimentation/mysql_experiments.ipynb
-
 ##### Prerequisites
 1. Install MySQL workbench
    1. https://dev.mysql.com/downloads/workbench/
